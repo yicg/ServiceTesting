@@ -27,22 +27,15 @@ public class Department extends Contact{
      * @return
      */
     public Response list(int id){
-//        return given().log().all()
-//                .param("access_token", Wework.getToken())
-//                .param("id",id)
-//                .when().get("https://qyapi.weixin.qq.com/cgi-bin/department/list")
-//                .then().log().all().statusCode(200).extract().response();
         HashMap<String,Object> map=new HashMap<>();
         map.put("id",id);
-        reset();
         return templateFromYaml("/api/list.yaml",map);
     }
 
     public Response list2(int id){
-        Response response= requestSpecification
+        Response response= getDefaultRequestSpecification()
                 .param("id",id)
                 .when().get("https://qyapi.weixin.qq.com/cgi-bin/department/list").then().extract().response();
-        reset();
         return response;
     }
 
@@ -53,35 +46,22 @@ public class Department extends Contact{
      */
     public Response creat(String name,String parentid){
         //使用模板技术，通过读取json文件并修改所需要的字段
-       String body= JsonPath.parse(this.getClass().getResourceAsStream("/data/create.json"))
-                .set(".name",name)
-                .set(".parentid",parentid).jsonString();
+        HashMap<String,Object> hashMap=new HashMap<>();
+        hashMap.put("name",name);
+        hashMap.put("parentid",parentid);
+        hashMap.put("_file","/data/create.json");
 
-        return given().log().all().contentType(ContentType.JSON)
-                .queryParam("access_token",Wework.getWeworkToken(WeworkConfig.getInstance().contactSecret))
-                .body(body)
-                .when().post("https://qyapi.weixin.qq.com/cgi-bin/department/create")
-                .then().log().all().statusCode(200).extract().response();
+        return templateFromYaml("/api/create.yaml",hashMap);
+
     }
 
-    /**
-     * 封装given
-     * @param name
-     * @param parentid
-     * @return
-     */
-    public Response creat2(String name,String parentid){
-        reset();
-        //使用模板技术，通过读取json文件并修改所需要的字段
-        String body= JsonPath.parse(this.getClass().getResourceAsStream("/data/create.json"))
-                .set(".name",name)
-                .set(".parentid",parentid).jsonString();
+    public Response creat(HashMap<String,Object> map){
+        map.put("_file","/data/create.json");
 
-        return requestSpecification
-                .body(body)
-                .when().post("https://qyapi.weixin.qq.com/cgi-bin/department/create")
-                .then().log().all().statusCode(200).extract().response();
+        return templateFromYaml("/api/create.yaml",map);
+
     }
+
 
     /**
      * 封装参数
@@ -89,14 +69,13 @@ public class Department extends Contact{
      * @return
      */
     public Response creat3(HashMap<String,Object> map){
-        reset();
         DocumentContext documentContext = JsonPath.parse(this.getClass().getResourceAsStream("/data/create.json"));
         Set<Map.Entry<String, Object>> entrySet = map.entrySet();
          //使用模板技术，通过读取json文件并修改所需要的字段
             for (Map.Entry<String,Object> maps:entrySet){
                 documentContext.set(maps.getKey(), maps.getValue());
             }
-        return requestSpecification
+        return getDefaultRequestSpecification()
                 .body(documentContext.jsonString())
                 .when().post("https://qyapi.weixin.qq.com/cgi-bin/department/create")
                 .then().log().all().statusCode(200).extract().response();
@@ -124,13 +103,12 @@ public class Department extends Contact{
     }
 
     public Response updateDepartment2(int id,String name,int parentid){
-        reset();
         String jsonString = JsonPath.parse(this.getClass().getResourceAsStream("/data/updateDepartment.json"))
                 .set("$.id", id)
                 .set("$.name", name)
                 .set("$.parentid", parentid).jsonString();
 
-        return requestSpecification
+        return getDefaultRequestSpecification()
                 .body(jsonString)
                 .when().post("https://qyapi.weixin.qq.com/cgi-bin/department/update")
                 .then().log().all().statusCode(200).extract().response();
@@ -164,7 +142,7 @@ public class Department extends Contact{
     }
 
     public Response deleteDepartment2(int id ){
-        Response response=requestSpecification
+        Response response=getDefaultRequestSpecification()
                 .queryParam("id",id)
                 .when().get("https://qyapi.weixin.qq.com/cgi-bin/department/delete")
                 .then().log().all().statusCode(200).extract().response();
@@ -178,7 +156,6 @@ public class Department extends Contact{
      * @return
      */
     public Response deleteAll(){
-        reset();
         List<Integer> ids= list(0).then().extract().path("department.id");
         System.out.println(ids);
         for (Integer id:ids

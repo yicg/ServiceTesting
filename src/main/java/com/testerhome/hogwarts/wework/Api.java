@@ -83,8 +83,6 @@ public class Api {
         return getDefaultRequestSpecification().when().request(method,url);
     }
 
-    //todo 也可以从YML文件中读取等等
-
     public Response templateFromYaml(String path,HashMap<String,Object> map){
         //读取yaml
         ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
@@ -97,16 +95,30 @@ public class Api {
                     restful.query.replace(entry.getKey(),entry.getValue());
                 });
             }
-            // todo 请求参数为post时
-
-            //遍历请求参数
-            Set<Map.Entry<String, Object>> entrySet = restful.query.entrySet();
-            for (Map.Entry<String, Object> query:entrySet
-            ) {
-                //不停的从map里遍历并追加到请求体中
-                getDefaultRequestSpecification().queryParam(query.getKey(),query.getValue());
+            // 请求参数为post时
+            if(restful.method.toLowerCase().contains("post")){
+                if(map.containsKey("_body")){
+                    restful.body=map.get("_body").toString();
+                }
+                if(map.containsKey("_file")){
+                    String filePath=map.get("_file").toString();
+                    map.remove("_file");
+                    restful.body=template(filePath,map);
+                }
             }
-           return getDefaultRequestSpecification().log().all().request(restful.method,restful.url).then().extract().response();
+            RequestSpecification requestSpecification=getDefaultRequestSpecification();
+
+            if(restful.query !=null){
+                restful.query.entrySet().forEach(entry->{
+                    requestSpecification.queryParam(entry.getKey(),entry.getValue());
+                });
+            }
+            if(restful.body !=null){
+                requestSpecification.body(restful.body);
+            }
+            return requestSpecification.log().all()
+                    .when().request(restful.method,restful.url)
+                    .then().log().all().extract().response();
 
         } catch (IOException e) {
             e.printStackTrace();
