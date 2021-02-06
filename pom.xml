@@ -45,6 +45,20 @@
             <artifactId>json-path</artifactId>
             <version>2.5.0</version>
         </dependency>
+
+        <!--ymal 转java依赖-->
+        <dependency>
+            <groupId>com.fasterxml.jackson.dataformat</groupId>
+            <artifactId>jackson-dataformat-yaml</artifactId>
+            <version>2.9.8</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.dataformat</groupId>
+            <artifactId>jackson-dataformat-xml</artifactId>
+            <version>2.9.8</version>
+        </dependency>
+
     </dependencies>
 
 

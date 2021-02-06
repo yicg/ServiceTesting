@@ -1,8 +1,7 @@
 package com.testerhome.hogwarts.contact;
 
-import com.testerhome.hogwarts.wework.Restful;
+import com.testerhome.hogwarts.wework.Api;
 import com.testerhome.hogwarts.wework.Wework;
-import com.testerhome.hogwarts.wework.WeworkConfig;
 import io.restassured.http.ContentType;
 
 import static io.restassured.RestAssured.given;
@@ -12,7 +11,7 @@ import static io.restassured.RestAssured.given;
  * @Date: 2021/1/26 下午11:28
  * @Version: 1.0
  */
-public class Contact extends Restful {
+public class Contact extends Api {
 
     String random=String.valueOf(System.currentTimeMillis());
 

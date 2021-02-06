@@ -27,11 +27,15 @@ public class Department extends Contact{
      * @return
      */
     public Response list(int id){
-        return given().log().all()
-                .param("access_token", Wework.getToken())
-                .param("id",id)
-                .when().get("https://qyapi.weixin.qq.com/cgi-bin/department/list")
-                .then().log().all().statusCode(200).extract().response();
+//        return given().log().all()
+//                .param("access_token", Wework.getToken())
+//                .param("id",id)
+//                .when().get("https://qyapi.weixin.qq.com/cgi-bin/department/list")
+//                .then().log().all().statusCode(200).extract().response();
+        HashMap<String,Object> map=new HashMap<>();
+        map.put("id",id);
+        reset();
+        return templateFromYaml("/api/list.yaml",map);
     }
 
     public Response list2(int id){

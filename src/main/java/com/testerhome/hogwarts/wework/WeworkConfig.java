@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 /**
  * @Author: yicg
@@ -17,6 +18,9 @@ public class WeworkConfig {
     public String Secret="Ldys9cD8SqpPiePYEaNQqOf-4i1vX_OabNJ8qEsrtCA";
     public String corpid="wwa90325ed46addba3";
     public String contactSecret="7gPOADnNRysIkwhO3br0IGjp_9ekuuZiwLsa4WvUaB4";
+
+    public String current="test";
+    public HashMap<String, HashMap<String, String>> env;
 
     //单例封装有个配置
     private static WeworkConfig weworkConfig;
@@ -38,7 +42,8 @@ public class WeworkConfig {
         //读取yaml
         ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
         try {
-           return mapper.readValue(WeworkConfig.class.getResourceAsStream(path),WeworkConfig.class);
+            return mapper.readValue(WeworkConfig.class.getResourceAsStream(path),WeworkConfig.class);
+
             //System.out.println(mapper.writeValueAsString(WeworkConfig.getInstance()));
         } catch (IOException e) {
             e.printStackTrace();
