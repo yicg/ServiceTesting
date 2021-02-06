@@ -1,5 +1,12 @@
 package com.testerhome.hogwarts.wework;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+
+import java.io.IOException;
+
 /**
  * @Author: yicg
  * @Date: 2021/1/24 下午9:30
@@ -15,13 +22,28 @@ public class WeworkConfig {
     private static WeworkConfig weworkConfig;
     public static WeworkConfig getInstance(){
         if(weworkConfig==null){
-            weworkConfig=new WeworkConfig();
+            //原方法
+            //weworkConfig=new WeworkConfig();
+
+            //通过序列化yml文件
+            weworkConfig=load("/conf/WeworkConfig.yaml");
+            System.out.println(weworkConfig);
+            System.out.println(weworkConfig.AgentId);
         }
         return weworkConfig;
     }
 
-    public static void load(String path){
-        //todo 从yaml/json文件去读取配置
+    public static WeworkConfig load(String path){
+        //从yaml/json文件去读取配置
+        //读取yaml
+        ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
+        try {
+           return mapper.readValue(WeworkConfig.class.getResourceAsStream(path),WeworkConfig.class);
+            //System.out.println(mapper.writeValueAsString(WeworkConfig.getInstance()));
+        } catch (IOException e) {
+            e.printStackTrace();
+            return  null;
+        }
     }
 
 }
