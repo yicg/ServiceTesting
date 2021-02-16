@@ -36,21 +36,15 @@ class DepartmentTest {
         department.creat("测试部门1","1");
     }
 
-    @Test
-    void creat3() {
-        HashMap<String,Object> map=new HashMap<>();
-        map.put("name","测试部门3");
-        map.put("parentid","1");
-        department.creat3(map);
-    }
 
     @Test
     void updateDepartment() {
-        String nameOld="test_department_001"+random;
+        String nameOld="test_department_002"+random;
         department.creat(nameOld,"1").path("depart");
         //获取部门列表
         int id = department.list(0).path("department.find{ it.name=='" + nameOld +"'}.id");
-        department.updateDepartment(id,"test_department_002"+random,1);
+        System.out.println("id="+id);
+        department.updateDepartment(id,"test_department_003"+random,1);
         //删除部门
         department.deleteDepartment(id).then().body("errcode",equalTo(0));
     }
@@ -64,19 +58,6 @@ class DepartmentTest {
         department.deleteDepartment(id).then().body("errcode",equalTo(0));
     }
 
-    /**
-     * 测试封装后的方法
-     */
-    @Test
-    void updateDepartment2() {
-        String nameOld="test_department_001"+random;
-        department.creat(nameOld,"1").path("depart");
-        //获取部门列表
-        int id = department.list2(0).path("department.find{ it.name=='" + nameOld +"'}.id");
-        department.updateDepartment2(id,"test_department_002"+random,1);
-        //删除部门
-        department.deleteDepartment2(id).then().body("errcode",equalTo(0));
-    }
 
     @Test
     void deleteAll() {

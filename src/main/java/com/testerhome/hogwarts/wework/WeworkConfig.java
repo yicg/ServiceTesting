@@ -19,7 +19,7 @@ public class WeworkConfig {
     public String corpid="wwa90325ed46addba3";
     public String contactSecret="7gPOADnNRysIkwhO3br0IGjp_9ekuuZiwLsa4WvUaB4";
 
-    public String current="test";
+    public String current="test";  //默认为test环境
     public HashMap<String, HashMap<String, String>> env;
 
     //单例封装有个配置

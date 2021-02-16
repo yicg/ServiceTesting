@@ -12,6 +12,7 @@ import io.restassured.specification.RequestSpecification;
  * @Version: 1.0
  */
 public class App extends Api {
+
     @Override
     public RequestSpecification getDefaultRequestSpecification() {
 

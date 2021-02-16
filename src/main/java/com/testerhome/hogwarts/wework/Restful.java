@@ -11,6 +11,6 @@ public class Restful {
     public String url;
     public String method;
     public HashMap<String,String> heads;
-    public HashMap<String,Object> query;
+    public HashMap<String,Object> query=new HashMap<>();
     public String body;
 }

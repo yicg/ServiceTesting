@@ -62,26 +62,6 @@ public class Department extends Contact{
 
     }
 
-
-    /**
-     * 封装参数
-     * @param map
-     * @return
-     */
-    public Response creat3(HashMap<String,Object> map){
-        DocumentContext documentContext = JsonPath.parse(this.getClass().getResourceAsStream("/data/create.json"));
-        Set<Map.Entry<String, Object>> entrySet = map.entrySet();
-         //使用模板技术，通过读取json文件并修改所需要的字段
-            for (Map.Entry<String,Object> maps:entrySet){
-                documentContext.set(maps.getKey(), maps.getValue());
-            }
-        return getDefaultRequestSpecification()
-                .body(documentContext.jsonString())
-                .when().post("https://qyapi.weixin.qq.com/cgi-bin/department/create")
-                .then().log().all().statusCode(200).extract().response();
-    }
-
-
     /**
      * 更新部门信息
      * @param id
@@ -90,33 +70,19 @@ public class Department extends Contact{
      * @return
      */
     public Response updateDepartment(int id,String name,int parentid){
-        String jsonString = JsonPath.parse(this.getClass().getResourceAsStream("/data/updateDepartment.json"))
-                .set("$.id", id)
-                .set("$.name", name)
-                .set("$.parentid", parentid).jsonString();
+       HashMap<String,Object> hashMap=new HashMap<>();
+       hashMap.put("_file","/data/updateDepartment.json");
+       hashMap.put("name",name);
+       hashMap.put("id",id);
+       hashMap.put("parentid",parentid);
 
-        return given().queryParam("access_token",Wework.getWeworkToken(WeworkConfig.getInstance().contactSecret))
-                .body(jsonString)
-                .when().post("https://qyapi.weixin.qq.com/cgi-bin/department/update")
-                .then().log().all().statusCode(200).extract().response();
+       return templateFromYaml("/api/update.yaml",hashMap);
 
     }
 
-    public Response updateDepartment2(int id,String name,int parentid){
-        String jsonString = JsonPath.parse(this.getClass().getResourceAsStream("/data/updateDepartment.json"))
-                .set("$.id", id)
-                .set("$.name", name)
-                .set("$.parentid", parentid).jsonString();
-
-        return getDefaultRequestSpecification()
-                .body(jsonString)
-                .when().post("https://qyapi.weixin.qq.com/cgi-bin/department/update")
-                .then().log().all().statusCode(200).extract().response();
-
-    }
 
     /**
-     * 再次运用封装思想
+     * 再次运用封装思想,从har文件里读取
      * @param map
      * @return
      */
@@ -131,23 +97,9 @@ public class Department extends Contact{
      * @return
      */
     public Response deleteDepartment(int id ){
-                Response response=given().log().all()
-                        .queryParam("access_token",Wework.getWeworkToken(WeworkConfig.getInstance().contactSecret))
-                        .queryParam("id",id)
-                        .when().get("https://qyapi.weixin.qq.com/cgi-bin/department/delete")
-                        .then().log().all().statusCode(200).extract().response();
-
-                return response;
-
-    }
-
-    public Response deleteDepartment2(int id ){
-        Response response=getDefaultRequestSpecification()
-                .queryParam("id",id)
-                .when().get("https://qyapi.weixin.qq.com/cgi-bin/department/delete")
-                .then().log().all().statusCode(200).extract().response();
-
-        return response;
+        HashMap<String,Object> hashMap=new HashMap<>();
+        hashMap.put("id",id);
+        return templateFromYaml("/api/delete.yaml",hashMap);
 
     }
 
